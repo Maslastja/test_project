@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+   {% include "head.html" %}
+   <body>
+      {% set logform=True %}
+      <div class="container">
+         <div class="columns">
+				<div class="column col-ml-auto">
+              {% include "base.html" %}
+            </div>
+				<div class="column col-8 col-mr-auto">
+		         <div>
+		            <h1>Введите логин и пароль</h1>
+		         </div>
+		         <div>
+		            {% if msg != '' %}
+		                  <p>{{ msg }}</p>
+		            {% endif %}
+		         </div> 
+		         <div>
+		            <form action="" method="post" novalidate>
+		            	{{ form.hidden_tag() }}
+							<div class="form-group">		               
+			               <div class="column col-4">
+			                  {{ form.username.label(class_="form-label") }}
+			                  {{ form.username(class_="form-input") }}
+			                  {% for error in form.username.errors %}
+			                     <span class="text-error">[{{ error }}]</span>
+			                  {% endfor %}
+			               </div>
+			               <div class="column col-4">
+			                  {{ form.password.label(class_="form-label") }}
+			                  {{ form.password(class_="form-input") }}
+			                  {% for error in form.password.errors %}
+			                     <span class="text-error">[{{ error }}]</span>
+			                  {% endfor %}
+			               </div>
+              			</div>
+							<div class="column">{{ form.submit(class_="btn") }}</div>
+		            </form>
+		         </div>
+	         </div> 
+	      </div>
+      </div>
+   </body>
+</html>

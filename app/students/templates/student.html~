@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	{% include "head.html" %}
+	<body>
+		{% set subname="sub5" %}
+		<div class="container">
+			<div class="columns">
+				<div class="column col-ml-auto">
+					{% include "base.html" %}
+				</div>
+				<div class="column col-8 col-mк-auto">
+					<h1>Список студентов</h1>
+					<table class="table table-striped table-hover">
+						<tr>
+							<th>№</th>
+							<th>ФИО</th>
+							<th>Дата рождения</th>
+							<th>№ студбилета</th>
+							<th>группа</th>
+						</tr>
+						{% for st in stud %}
+							<tr>
+								<td>{{ st.ind }}</td>
+								<td>{{ st.f }}</td>
+								<td>{{ st.bdate }}</td>
+								<td>{{ st.t }}</td>
+								<td>{{ st.gr }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				</div> 
+				<div class="column col-ml-auto">
+					{% if 'user_id' in session %}
+						<span class="label label-secondary">пользователь: {{ session['username'] }}</span>
+					{% endif %}
+					<a name='exit' href='/login' class="btn-link">Выход</a> 
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

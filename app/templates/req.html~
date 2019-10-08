@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    {% include "head.html" %}
+    <body>
+		<div class="container">
+			<div class="columns">
+				<div class="column col-ml-auto">
+					{% include "base.html" %}
+				</div>
+				<div class="column col-8 col-mx-auto">
+	          	<span class="label label-success">{{ req }}</span>  
+				</div> 
+				<div class="column col-ml-auto">
+					{% if 'user_id' in session %}
+						<span class="label label-secondary">пользователь: {{ session['username'] }}</span>
+					{% endif %}
+					<a name='exit' href='/login' class="btn-link">Выход</a> 
+				</div> 
+			</div>
+		</div>	    
+    </body>
+</html>

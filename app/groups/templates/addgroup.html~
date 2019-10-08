@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	{% include "head.html" %}
+	<body>
+		{% set subname="sub2" %}
+		<div class="container">
+			<div class="columns">
+				<div class="column col-ml-auto">
+					{% include "base.html" %}
+				</div>
+				<div class="column col-8 col-mr-auto">
+					<h1>Добавить группу</h1>
+					<form action="" method="post" novalidate>
+						{{ form.hidden_tag() }}
+						<div class="form-group">
+							<div class="column col-2">
+								{{ form.name.label(class_="form-label") }}
+								{{ form.name(class_="form-input") }}
+								{% for error in form.name.errors %}
+									<span class="text-error">[{{ error }}]</span>
+								{% endfor %}
+							</div>
+						</div>
+						<div class="column">
+							{{ form.submit1(class_='btn btn-primary') }}
+						</div>
+					</form>
+				</div> 
+				{% include "view_usr.html" %}
+			</div>
+		</div>	    
+	</body>
+</html>
