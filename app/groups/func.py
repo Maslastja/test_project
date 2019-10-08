@@ -72,7 +72,7 @@ def update_group():
     if gr is not None:
         name = request.form.get('name')
         stud_id = request.form.get('stud_id')
-        if name == '' and (stud_id == '' or stud_id != 0):
+        if name == '' and (stud_id == '' or stud_id == 0):
             req = 'нечего изменять'
         else:
             if stud_id != '':
