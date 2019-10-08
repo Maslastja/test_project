@@ -4,20 +4,20 @@ from wtforms.validators import DataRequired
 
 
 class AddStudentForm(FlaskForm):
-    f = StringField('Фамилия', validators=[DataRequired('Значение не заполнено')])
-    i = StringField('Имя', validators=[DataRequired('Значение не заполнено')])
+    f = StringField('Фамилия', validators=[DataRequired('значение не заполнено')])
+    i = StringField('Имя', validators=[DataRequired('значение не заполнено')])
     o = StringField('Отчество')
     bdate = StringField('Дата рождения (дд.мм.гггг)', 
-                        validators=[DataRequired('Значение не заполнено')])
+                        validators=[DataRequired('значение не заполнено')])
     t = IntegerField('Номер студенческого билета', 
-                     validators=[DataRequired('Значение не заполнено')]) 
+                     validators=[DataRequired('значение не заполнено')]) 
     name = SelectField(u'Выберите группу', coerce=int, 
-                       validators=[DataRequired('Значение не выбрано')])
+                       validators=[DataRequired('значение не выбрано')])
     submit1 = SubmitField('Добавить')
 
 class UpStudentForm(FlaskForm):
     id = SelectField(u'Выберите студента', coerce=int, 
-                     validators=[DataRequired('Значение не заполнено')])
+                     validators=[DataRequired('значение не заполнено')])
     f = StringField('Фамилия')
     i = StringField('Имя')
     o = StringField('Отчество')
@@ -28,5 +28,5 @@ class UpStudentForm(FlaskForm):
 
 class DelStudentForm(FlaskForm):
     id = SelectField(u'Выберите студента', coerce=int, 
-                     validators=[DataRequired('Значение не выбрано')])
+                     validators=[DataRequired('значение не выбрано')])
     submit1 = SubmitField('Удалить')
