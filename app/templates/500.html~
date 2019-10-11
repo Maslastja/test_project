@@ -11,12 +11,7 @@
 		        <h1>Что-то пошло не так</h1>
 		        <p>Обязательно постараемся решить проблему в скором времени!</p>
  				</div> 
-				<div class="column col-2">
-					{% if 'user_id' in session %}
-						<span class="label label-secondary">пользователь: {{ session['username'] }}</span>
-					{% endif %}
-					<a name='exit' href='/login' class="btn-link">Выход</a> 
-				</div> 
+				{% include "view_usr.html" %}
 			</div>
 		</div>	            
    </body>
