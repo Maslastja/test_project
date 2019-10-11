@@ -1,9 +1,12 @@
 import os
-import importlib
 import logging
 from flask import Flask, render_template
 from logging.handlers import RotatingFileHandler
 from config.database import db
+from app.groups import bp as bp_gr
+from app.students import bp as bp_st
+from app.analis import bp as bp_an
+from app.admin import bp as bp_adm
 from app import views
 
 def create_app():
@@ -14,18 +17,21 @@ def create_app():
        app.config.from_object('config.settings')
        
        
-       register_bp(app)
+       app.register_blueprint(bp_gr, url_prefix='/group')
+       app.register_blueprint(bp_st, url_prefix='/student')
+       app.register_blueprint(bp_an, url_prefix='/analis')
+       app.register_blueprint(bp_adm, url_prefix='/admin')
 
        db.init_app(app)
        #db.database.create_tables([User])
               
-       @app.errorhandler(Exception)
-       def handle_error(e):
-              code = 500
-              #print(e.code)
-              if e.code == 404 or e.code == 500:
-                     code = e.code
-              return render_template(str(code)+'.html'), code
+       @app.errorhandler(404)
+       def not_found_error(error):
+              return render_template('404.html', title='404 Not found'), 404
+       
+       @app.errorhandler(500)
+       def internal_error(error):
+              return render_template('500.html', title='500 Oops!'), 500
        
        app.add_url_rule('/login', view_func=views.login, 
                        methods=['GET', 'POST'])       
@@ -43,28 +49,8 @@ def create_app():
               app.logger.addHandler(file_handler)
        
               app.logger.setLevel(logging.INFO)
-              app.logger.info('test app')
+              app.logger.info('Microblog startup')
            
        return app
 
-def register_bp(app):
-       indir = 'app/'
-       for address, dirs, files in os.walk(indir):
-              for d in dirs:
-                     path = 'app.'+d
-                     module_spec = importlib.util.find_spec(path)
-                     if module_spec.loader is not None:
-                            module = importlib.util.module_from_spec(module_spec)
-                            module_spec.loader.exec_module(module)
-                            
-                            #print(module.bp)
-                            bp = module.bp
-                            try:
-                                   opt = module.options
-                            except AttributeError:
-                                   opt = {}
-                            app.register_blueprint(bp, **opt)
-                            
-                            
-              
-       
+

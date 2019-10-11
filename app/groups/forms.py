@@ -9,9 +9,10 @@ class AddGroupForm(FlaskForm):
 
 class UpGroupForm(FlaskForm):
     id = SelectField(u'Выберите группу', coerce=int, 
-                     validators=[DataRequired('значение не выбрано')])
+                     validators=[DataRequired('значение не выбрано')],
+                     id='sel_gr')
     name = StringField('Наименование группы')
-    stud_id = SelectField(u'Выберите старосту', coerce=int)
+    stud_id = SelectField(u'Выберите старосту', coerce=int, id='sel_st')
     submit1 = SubmitField('Изменить')
 
 class DelGroupForm(FlaskForm):

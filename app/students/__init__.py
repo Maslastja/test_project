@@ -2,6 +2,7 @@ from flask import Blueprint
 from . import views
 
 bp = Blueprint('students', __name__, template_folder='templates')
+options = {'url_prefix': '/student'}
 
 bp.add_url_rule('/add', view_func=views.addstudent, 
                 methods=['GET', 'POST'])
