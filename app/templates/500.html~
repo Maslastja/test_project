@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-	{% set title="404 Not found" %}
+	{% set title="500 Oops!" %}    
 	{% include "head.html" %}
 	<body>
 		<div class="container">
@@ -10,7 +10,8 @@
 				</div>
 				<div class="column col-8 col-mx-auto">
 					<div class="column col-8 p-centered">
-	          	<h1>Упс! такая страничка не найдена</h1> 
+						<h1>Что-то пошло не так</h1>
+						<p>Обязательно постараемся решить проблему в скором времени!</p>
 	          	</div> 
 				</div> 
 				{% include "view_usr.html" %}
