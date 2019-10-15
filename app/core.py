@@ -3,6 +3,7 @@ import importlib
 #import logging
 from flask import Flask, render_template
 from logging.handlers import RotatingFileHandler
+from werkzeug.exceptions import NotFound
 from config.database import db
 from app import views
 from peewee import logging
@@ -26,10 +27,11 @@ def create_app():
               
        @app.errorhandler(Exception)
        def handle_error(e):
-              code = 500
               print(e)
-              if 'code' in e and (e.code == 404 or e.code == 500):
-                     code = e.code
+              if type(e)==NotFound:
+                     code = 404
+              else:
+                     code = 500
               return render_template(str(code)+'.html'), code
        
        app.add_url_rule('/login', view_func=views.login, 
