@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	{% include "head.html" %}
+	<body>
+		{% set subname="sub8" %}
+		<div class="container">
+			<div class="columns">
+				<div class="column col-ml-auto">
+					{% include "base.html" %}
+				</div>
+				<div class="column col-8 col-mr-auto">
+					<h1>Удалить студента</h1>
+					<form action="" method="post" novalidate>
+							{{ form.hidden_tag() }}
+							<div class="form-group">
+								<div class="column col-2">								
+									{{ form.id.label(class_="form-label") }}
+								</div>
+								<div class="column col-4">	
+									{{ form.id(class_="form-select") }}
+								</div>
+								<div class="column col-auto">	
+									{% for error in form.id.errors %}
+										<span class="text-error">[{{ error }}]</span>
+									{% endfor %}
+								</div>	
+								
+							</div>
+							<div class="column col-1">{{ form.submit1(class_='btn btn-primary') }}</div>
+					</form>
+				</div> 
+				{% include "view_usr.html" %}
+			</div>
+		</div>
+	</body>
+</html>

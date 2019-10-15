@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	{% include "head.html" %}
+	<body>
+		{% set subname="sub1" %}
+		<div class="container">
+			<div class="columns">
+				<div class="column col-ml-auto">
+					{% include "base.html" %}
+				</div>
+				<div class="column col-8 col-mr-auto">
+					<h1>Список групп</h1>
+					<table class="table table-striped table-hover">
+						<tr>
+							<th width=3>№</th>
+							<th width=10>группа</th>
+							<th>староста</th>
+						</tr>   
+						{% for g in gr %}
+							<tr>
+								<td>{{ g.ind }}</td>
+								<td>{{ g.grname }}</td>
+								<td>{{ g.star }}</td>
+							</tr>
+						{% endfor %}
+					</table>        
+				</div> 
+				{% include "view_usr.html" %}
+			</div>
+		</div>	    
+	</body>
+</html>
