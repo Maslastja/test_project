@@ -1,10 +1,15 @@
 import os
 import importlib
-import logging
+#import logging
 from flask import Flask, render_template
 from logging.handlers import RotatingFileHandler
 from config.database import db
 from app import views
+from peewee import logging
+
+#logger = logging.getLogger('peewee')
+#logger.addHandler(logging.StreamHandler())
+#logger.setLevel(logging.DEBUG)
 
 def create_app():
        app = Flask('app', root_path=os.getcwd(), 
@@ -22,8 +27,8 @@ def create_app():
        @app.errorhandler(Exception)
        def handle_error(e):
               code = 500
-              #print(e.code)
-              if e.code == 404 or e.code == 500:
+              print(e)
+              if 'code' in e and (e.code == 404 or e.code == 500):
                      code = e.code
               return render_template(str(code)+'.html'), code
        
@@ -35,10 +40,11 @@ def create_app():
        if not app.debug:
               if not os.path.exists('logs'):
                      os.mkdir('logs')
-              file_handler = RotatingFileHandler('logs/microblog.log', 
+              file_handler = RotatingFileHandler('logs/app.log', 
                                                  maxBytes=10240, backupCount=10)
               file_handler.setFormatter(logging.Formatter(
-               '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+               '%(asctime)s %(levelname)s: \
+               %(message)s [in %(pathname)s:%(lineno)d]'))
               file_handler.setLevel(logging.INFO)
               app.logger.addHandler(file_handler)
        
@@ -58,12 +64,13 @@ def register_bp(app):
                             module_spec.loader.exec_module(module)
                             
                             #print(module.bp)
-                            bp = module.bp
-                            try:
-                                   opt = module.options
-                            except AttributeError:
-                                   opt = {}
-                            app.register_blueprint(bp, **opt)
+                            if 'bp' in module.__dict__:
+                                   bp = module.bp
+                                   if 'options' in module.__dict__:
+                                          opt = module.options
+                                   else:
+                                          opt = {}
+                                   app.register_blueprint(bp, **opt)
                             
                             
               

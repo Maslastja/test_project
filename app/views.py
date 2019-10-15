@@ -15,6 +15,7 @@ def login():
     #выход пользователя, обнулить запомненный id пользователя
     session.pop('user_id', None)
     session.pop('username', None)
+    session.pop('isadmin', None)
     form = LoginForm()
     msg=''
     if request.method == 'POST' and form.validate_on_submit():
@@ -30,6 +31,7 @@ def login():
             
             session['user_id'] = user.id
             session['username'] = user.username
+            session['isadmin'] = user.isadmin
             return resp
         else:
             msg = f'{usr[1]}. Повторите попытку.'

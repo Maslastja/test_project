@@ -1,5 +1,5 @@
 import peewee as pw
-from app.models.group import Group
+#from app.models.group import Group
 from config.database import db
 
 class Student(db.Model):
@@ -9,7 +9,7 @@ class Student(db.Model):
     secondname = pw.CharField(max_length=50)
     birthdate = pw.DateField()
     numticket = pw.IntegerField()
-    group = pw.ForeignKeyField(Group)
+    group = pw.DeferredForeignKey('Group', null=True)
 
     class Meta:
         db_table = "students"

@@ -85,4 +85,3 @@ def test_secr():
                 #'inline; filename=output.pdf'
     return response    
      #return ("Template rendering finished! Check output.odt file.")
-    

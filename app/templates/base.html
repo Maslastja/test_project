@@ -50,7 +50,7 @@
 				{% else %}
 					<a name='sub9' href='/analis/countstud' class="btn">Вывести количество студентов</a>    
 				{% endif %}
-				{% if not logform and session['username'] == 'admin' %}
+				{% if not logform and session['isadmin'] %}
 					<div class="btn-group">
 						<div class="p-centered">
 							<span class="label label-primary">Администрирование</span>
