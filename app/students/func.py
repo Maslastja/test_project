@@ -22,21 +22,20 @@ def get_stud_info():
 def add_student():
     stinfo = get_stud_info()
     gr = Group.get_by_id(stinfo['gr_id'])
-    bdar = stinfo['bdate'].split('.')
+    bdar = stinfo['bdate'].split('-')
     stud = Student.select().where(Student.surname == stinfo['f'],
                                   Student.firstname == stinfo['i'],
                                   Student.secondname == stinfo['o'],
-                                  Student.birthdate == date(int(bdar[2]),
+                                  Student.birthdate == date(int(bdar[0]),
                                                             int(bdar[1]),
-                                                            int(bdar[0])),
+                                                            int(bdar[2])),
                                   Student.numticket == stinfo['t'])
     if len(stud) == 0:
-        bd = bdar[2] + '-' + bdar[1] + '-' + bdar[0]
         row = Student(
             surname=stinfo['f'],
             firstname=stinfo['i'],
             secondname=stinfo['o'],
-            birthdate=bd,
+            birthdate=stinfo['bdate'],
             numticket=stinfo['t'],
             group=gr
         )
@@ -125,8 +124,7 @@ def update_stud():
                 if stinfo['o'] != '':
                     stud.secondname = stinfo['o']
                 if stinfo['bdate'] != '':
-                    bdar = stinfo['bdate'].split('.')
-                    stud.birthdate = bdar[2] + '-' + bdar[1] + '-' + bdar[0]
+                    stud.birthdate = stinfo['bdate']
                 if stinfo['t'] != '':
                     stud.numticket = stinfo['t']
                 str_star=''
