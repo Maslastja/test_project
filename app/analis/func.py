@@ -5,13 +5,12 @@ from app.models.student import Student
 # вывод информации о количестве студентов в группе
 def analis_gr():
     g = Group.alias()
-    g1 = Group.alias()
     s = Student.alias()
     s1 = Student.alias()
     sel = (g
            .select(
                g.groupname,
-               pw.fn.Count(s.id).alias('kolvo'),
+               pw.fn.Count(s.id).alias('count'),
                pw.fn.Max(pw.fn.CONCAT_WS(' ',
                                    s1.surname,
                                    s1.firstname,
@@ -25,7 +24,7 @@ def analis_gr():
     for stroka in sel:
         req.append( 
             {'grname': stroka.groupname,
-             'kolvo': stroka.kolvo,
+             'count': stroka.count,
              'star': (stroka.fio if stroka.fio != '' else 'не указан')
              }
         )

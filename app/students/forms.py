@@ -1,17 +1,19 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, SelectField, DateField
+from wtforms import (StringField, SubmitField, IntegerField, SelectField, 
+                     DateField)
 from wtforms.validators import DataRequired
 
 
 class AddStudentForm(FlaskForm):
-    f = StringField('Фамилия', validators=[DataRequired('значение не заполнено')])
+    f = StringField('Фамилия', 
+                    validators=[DataRequired('значение не заполнено')])
     i = StringField('Имя', validators=[DataRequired('значение не заполнено')])
     o = StringField('Отчество')
     bdate = StringField('Дата рождения (дд.мм.гггг)', 
                         validators=[DataRequired('значение не заполнено')])
     t = IntegerField('Номер студенческого билета', 
                      validators=[DataRequired('значение не заполнено')]) 
-    name = SelectField(u'Выберите группу', coerce=int, 
+    gr_id = SelectField(u'Выберите группу', coerce=int, 
                        validators=[DataRequired('значение не выбрано')])
     submit1 = SubmitField('Добавить')
 

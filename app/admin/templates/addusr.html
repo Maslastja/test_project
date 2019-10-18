@@ -15,14 +15,14 @@
 						<div class="form-group">
 							<div class="column col-3">
 								{{ form.username.label(class_="form-label") }}
-								{{ form.username(class_="form-input") }}
+								{{ form.username(class_="form-input", autocomplete="off") }}
 								{% for error in form.username.errors %}
 										<span class="text-error">[{{ error }}]</span>
 								{% endfor %}
 							</div>
 							<div class="column col-3">
 								{{ form.password.label(class_="form-label") }}
-								{{ form.password(class_="form-input") }}
+								{{ form.password(class_="form-input", autocomplete="off") }}
 								{% for error in form.password.errors %}
 										<span class="text-error">[{{ error }}]</span>
 								{% endfor %}

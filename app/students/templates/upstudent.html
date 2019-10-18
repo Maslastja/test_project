@@ -33,7 +33,7 @@
 								{{ form.f.label(class_="form-label") }}
 							</div>
 							<div class="column col-auto">
-								{{ form.f(class_="form-input") }}
+								{{ form.f(class_="form-input", autocomplete="off") }}
 							</div>
 							<div class="column col-auto">
 								{% for error in form.f.errors %}
@@ -46,7 +46,7 @@
 								{{ form.i.label(class_="form-label") }}
 							</div>
 							<div class="column col-auto">
-								{{ form.i(class_="form-input") }}
+								{{ form.i(class_="form-input", autocomplete="off") }}
 							</div>
 							<div class="column col-auto">	
 								{% for error in form.i.errors %}
@@ -59,7 +59,7 @@
 								{{ form.o.label(class_="form-label") }}
 							</div>
 							<div class="column col-auto">
-								{{ form.o(class_="form-input") }}
+								{{ form.o(class_="form-input", autocomplete="off") }}
 							</div>
 							<div class="column col-auto">	
 								{% for error in form.o.errors %}
@@ -85,7 +85,7 @@
 								{{ form.t.label(class_="form-label") }}
 							</div>
 							<div class="column col-auto">
-								{{ form.t(class_="form-input") }}
+								{{ form.t(class_="form-input", autocomplete="off") }}
 							</div>
 							<div class="column col-auto">	
 								{% for error in form.t.errors %}

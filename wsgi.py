@@ -1,7 +1,7 @@
 from app.core import create_app
-from app import commands
+from app.commands import dbase
 
 app = create_app()
-commands.register(app)
+app.cli.add_command(dbase)
 
 #app.run('localhost', 8080)

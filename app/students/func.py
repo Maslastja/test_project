@@ -4,59 +4,48 @@ from datetime import date
 from app.models.group import Group
 from app.models.student import Student
 
-# возврат полного ФИО студента
-def stud_fio(stud):
-    return f'{stud.surname} {stud.firstname} {stud.secondname}'
 
-# поиск группы по наименованию
-def search_gr(name):
-    gr = Group.select().where(Group.groupname == name)
-    if len(gr) == 0:
-        print(f'Группы {name} не существует')
-        return None
-    else:
-        return gr.get()
-
-# поиск группы по id
-def search_gr_by_id(id):
-    gr = Group.select().where(Group.id == id)
-    if len(gr) == 0:
-        return None
-    else:
-        return gr.get()
-
+# получить информацию из запроса
+def get_stud_info():
+    studinfo={
+        'f': request.form.get('f'),
+        'i': request.form.get('i'),
+        'o': request.form.get('o'),
+        'bdate': request.form.get('bdate'),
+        't': request.form.get('t'),
+        'gr_id': request.form.get('gr_id')
+    }
+    
+    return studinfo
+    
 # добавление нового студента
 def add_student():
-    f = request.form.get('f')
-    i = request.form.get('i')
-    o = request.form.get('o')
-    bdate = request.form.get('bdate')
-    t = int(request.form.get('t'))
-    name = request.form.get('name')
-    gr = search_gr_by_id(int(name))
-    bdar = bdate.split('.')
-    stud = Student.select().where(Student.surname == f,
-                                  Student.firstname == i,
-                                  Student.secondname == o,
+    stinfo = get_stud_info()
+    gr = Group.get_by_id(stinfo['gr_id'])
+    bdar = stinfo['bdate'].split('.')
+    stud = Student.select().where(Student.surname == stinfo['f'],
+                                  Student.firstname == stinfo['i'],
+                                  Student.secondname == stinfo['o'],
                                   Student.birthdate == date(int(bdar[2]),
                                                             int(bdar[1]),
                                                             int(bdar[0])),
-                                  Student.numticket == t)
+                                  Student.numticket == stinfo['t'])
     if len(stud) == 0:
         bd = bdar[2] + '-' + bdar[1] + '-' + bdar[0]
         row = Student(
-            surname=f,
-            firstname=i,
-            secondname=o,
+            surname=stinfo['f'],
+            firstname=stinfo['i'],
+            secondname=stinfo['o'],
             birthdate=bd,
-            numticket=t,
+            numticket=stinfo['t'],
             group=gr
         )
         row.save()
-        req = (f'Создан студент {f} {i} {o}, дата рождения {bdate}, № студбилета'
-             f' {t}, группа {gr.groupname}')
+        req = (f'Создан студент {stinfo["f"]} {stinfo["i"]} {stinfo["o"]}, \
+        дата рождения {stinfo["bdate"]}, № студбилета {stinfo["t"]}, \
+        группа {gr.groupname}')
     else:
-        req = (f'Студент {f} {i} {o} уже создан')
+        req = (f'Студент {stinfo["f"]} {stinfo["i"]} {stinfo["o"]} уже создан')
         
     return req
 
@@ -78,57 +67,38 @@ def find_all_students():
     if arg_gr:
         sel = sel.where(Group.groupname == str(arg_gr))
     
-    return sel.namedtuples()
-
-# поиск студента по id
-def search_stud_by_id(id):
-    stud = (Student
-            .select()
-            .where(Student.id == id))
+    stud = []
+    i=1
+    for student in sel.namedtuples():
+        #print(student)
+        stud.append(
+            {'id': student.id,
+             'ind': i,
+             'f': f'{student.surname} {student.firstname} {student.secondname}',
+             'bdate': f'{student.birthdate:%Y-%m-%d}',
+             't': student.numticket,
+             'gr': student.groupname
+            })
+        i=i+1
     
-    if len(stud) == 0:
-        return None
-    else:
-        return stud.get()
+    return stud
 
-# поиск студента по ФИО
-def search_stud(f, i, o):
-    stud = (Student
-            .select()
-            .where(Student.surname == f,
-                   Student.firstname == i,
-                   Student.secondname == o)
-            )
-    
-    if len(stud) == 0:
-        print(f'Студента  {f} {i} {o} не существует')
-        return None
-    else:
-        return stud.get()
-
-# удаление студента по номеру студенческого билета
+# удаление студента
 def delete_stud():
     id = request.form.get('id')
     if id:
-        stud = Student.select().where(Student.id == id)
-        if len(stud) == 0:
-            req = (f'Студента с id {id} не существует')
+        stud = Student.get_by_id(id)
+        oldname = str(stud)
+        gr_with_stud = Group.get_by_stud(stud)
+        if len(gr_with_stud) == 0:
+            result = Student.del_stud(id)
+            if result != 0:
+                req = (f'студент {oldname} успешно удален')
         else:
-            stud = stud.get()
-            oldname = stud_fio(stud)
-            gr_with_stud = (Group
-                            .select()
-                            .where(Group.starosta == stud)
-                            .namedtuples())
-            if len(gr_with_stud) == 0:
-                stud = Student.delete().where(Student.id == id).execute()
-                if stud != 0:
-                    req = (f'студент {oldname} успешно удален')
-            else:
-                for g in gr_with_stud:
-                    gname = g.groupname
-                req = (f'Невозможно удалить студента т.к. он староста в группе\
-                      {gname}') 
+            for g in gr_with_stud:
+                gname = g.groupname
+            req = (f'Невозможно удалить студента т.к. он староста в группе\
+                  {gname}') 
             
         return req
 
@@ -136,34 +106,32 @@ def delete_stud():
 def update_stud():
     id = request.form.get('id')
     if id:
-        stud = search_stud_by_id(id)
+        stud = Student.get_by_id(id)
+        print(stud)
         if stud is not None:
-            f = request.form.get('f')
-            i = request.form.get('i')
-            o = request.form.get('o')
-            bdate = request.form.get('bdate')
-            t = request.form.get('t')
-            gr_id = request.form.get('gr_id')
-                                
-            oldfio = stud_fio(stud)
-            if (f == '' and i == '' and o == '' and bdate == '' and t == '' and 
-            gr_id == ''):
+            stinfo = get_stud_info()
+            print(stinfo)
+                                            
+            oldfio = str(stud)
+            if (stinfo['f'] == '' and stinfo['i'] == '' and 
+                stinfo['o'] == '' and stinfo['bdate'] == '' and 
+                stinfo['t'] == '' and stinfo['gr_id'] == '0'):
                 req = 'нечего изменять'
             else:    
-                if f != '':
-                    stud.surname = f
-                if i != '':
-                    stud.firstname = i
-                if o != '':
-                    stud.secondname = o
-                if bdate != '':
-                    bdar = bdate.split('.')
+                if stinfo['f'] != '':
+                    stud.surname = stinfo['f']
+                if stinfo['i'] != '':
+                    stud.firstname = stinfo['i']
+                if stinfo['o'] != '':
+                    stud.secondname = stinfo['o']
+                if stinfo['bdate'] != '':
+                    bdar = stinfo['bdate'].split('.')
                     stud.birthdate = bdar[2] + '-' + bdar[1] + '-' + bdar[0]
-                if t != '':
-                    stud.numticket = int(t)
+                if stinfo['t'] != '':
+                    stud.numticket = stinfo['t']
                 str_star=''
-                if gr_id != '':
-                    gr = search_gr_by_id(gr_id)
+                if stinfo['gr_id'] != '0':
+                    gr = Group.get_by_id(stinfo['gr_id'])
                     if gr is not None:
                         if stud == stud.group.starosta and gr != stud.group:
                             str_star = ' невозможно изменить группу, т.к. \
