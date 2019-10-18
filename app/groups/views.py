@@ -48,20 +48,14 @@ def delgroup():
         return render_template('delgroup.html', form=form,  
                                title='Удалить группу')
 def test_secr():
+    gr = find_all_groups()
     engine = Renderer()
-    template = open('app/groups/template.odt', 'rb')
-    output = open('output.odt', 'wb')
-    eng = engine.render(template, image='app/groups/writer.png')
-    output.write(eng)
-    p = subprocess.call(['unoconv', '-f', 'pdf', 'output.odt'])
-    with open('output.pdf', 'rb') as f:
-        file_content = f.read()
-    
-    response = make_response(file_content, 200)
+    template = open('app/groups/templates/template.odt', 'rb')
+    eng = engine.render(template, image='app/groups/writer.png', stroki=gr)
+    #eng возвращает двоичный объект - заполненный шаблон
+    response = make_response(eng)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = \
-                'inline'
-    #response.headers['Content-Disposition'] = \
-                #'inline; filename=output.pdf'
+                'attachment; filename=testfile.pdf'
     return response    
-     #return ("Template rendering finished! Check output.odt file.")
+    
