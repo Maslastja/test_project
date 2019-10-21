@@ -1,7 +1,7 @@
 import os
 import importlib
 #import logging
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session, redirect, url_for
 from logging.handlers import RotatingFileHandler
 from werkzeug.exceptions import NotFound
 from config.database import db
@@ -21,9 +21,17 @@ def create_app():
        
        
        register_bp(app)
-
+       #print(app.blueprints)
        db.init_app(app)
-       #db.database.create_tables([User])
+              
+       @app.before_request
+       def before_request():
+              #print(request.endpoint)
+              #print(request.blueprint)
+              #print(request.url)
+              if 'user_id' not in session and (request.blueprint is None or
+                                               str(request.blueprint) != 'auth'):
+                     return redirect(url_for('auth.login', next=request.url))
               
        @app.errorhandler(Exception)
        def handle_error(e):
@@ -34,8 +42,6 @@ def create_app():
                      code = 500
               return render_template(str(code)+'.html'), code
        
-       app.add_url_rule('/login', view_func=views.login, 
-                       methods=['GET', 'POST'])       
        app.add_url_rule('/index', view_func=views.index)
        app.add_url_rule('/', view_func=views.index)
        
@@ -65,15 +71,19 @@ def register_bp(app):
                             module = importlib.util.module_from_spec(module_spec)
                             module_spec.loader.exec_module(module)
                             
-                            #print(module.bp)
-                            if 'bp' in module.__dict__:
-                                   bp = module.bp
-                                   if 'options' in module.__dict__:
-                                          opt = module.options
-                                   else:
-                                          opt = {}
-                                   app.register_blueprint(bp, **opt)
+                            check_bp(module, app)
                             
+
+def check_bp(module, app):
+       #print(module.bp)
+       if 'bp' in module.__dict__:
+              bp = module.bp
+              if 'options' in module.__dict__:
+                     opt = module.options
+              else:
+                     opt = {}
+              app.register_blueprint(bp, **opt)
+       
                             
               
        
