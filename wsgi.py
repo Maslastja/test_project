@@ -1,8 +1,8 @@
-import os
+from os import getenv
 from app.core import create_app
 
 app = create_app()
-if os.getenv('DEBUG')=='True':
+if getenv('DEBUG')=='True':
     from app.commands import dbase
     #print(os.getenv('DEBUG'))
     app.cli.add_command(dbase)

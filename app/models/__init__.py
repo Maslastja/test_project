@@ -12,13 +12,13 @@ def all_models():
     ArModels.append(Student)
     ArModels.append(Group)
     
-    print(ArModels)
     return ArModels
 
 def one_model(name):
-    #print(globals().keys())
-    if name in globals() and issubclass(type(globals()[name]), pw.ModelBase):
-        #print(globals()[name])
-        return globals()[name]
+    ArModels = all_models()
+    for mod in ArModels:
+        if name == mod.__name__:
+            #print(name)
+            return mod
     else:
         return None

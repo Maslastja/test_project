@@ -8,12 +8,12 @@ from app.models.student import Student
 # получить информацию из запроса
 def get_stud_info():
     studinfo={
-        'f': request.form.get('f'),
-        'i': request.form.get('i'),
-        'o': request.form.get('o'),
-        'bdate': request.form.get('bdate'),
-        't': request.form.get('t'),
-        'gr_id': request.form.get('gr_id')
+        'surname': request.form.get('surname'),
+        'firstname': request.form.get('firstname'),
+        'secondname': request.form.get('secondname'),
+        'birthdate': request.form.get('birthdate'),
+        'numticket': request.form.get('numticket'),
+        'group': int(request.form.get('group'))
     }
     
     return studinfo
@@ -21,30 +21,29 @@ def get_stud_info():
 # добавление нового студента
 def add_student():
     stinfo = get_stud_info()
-    gr = Group.get_by_id(stinfo['gr_id'])
-    bdar = stinfo['bdate'].split('-')
-    stud = Student.select().where(Student.surname == stinfo['f'],
-                                  Student.firstname == stinfo['i'],
-                                  Student.secondname == stinfo['o'],
-                                  Student.birthdate == date(int(bdar[0]),
-                                                            int(bdar[1]),
-                                                            int(bdar[2])),
-                                  Student.numticket == stinfo['t'])
+    gr = Group.get_by_id(stinfo['group'])
+    #bdar = stinfo['bdate'].split('-')
+    stud = Student.select().where(Student.surname == stinfo['surname'],
+                                  Student.firstname == stinfo['firstname'],
+                                  Student.secondname == stinfo['secondname'],
+                                  Student.birthdate == stinfo['birthdate'],
+                                  Student.numticket == stinfo['numticket'])
     if len(stud) == 0:
         row = Student(
-            surname=stinfo['f'],
-            firstname=stinfo['i'],
-            secondname=stinfo['o'],
-            birthdate=stinfo['bdate'],
-            numticket=stinfo['t'],
+            surname=stinfo['surname'],
+            firstname=stinfo['firstname'],
+            secondname=stinfo['secondname'],
+            birthdate=stinfo['birthdate'],
+            numticket=stinfo['numticket'],
             group=gr
         )
         row.save()
-        req = (f'Создан студент {stinfo["f"]} {stinfo["i"]} {stinfo["o"]}, \
-        дата рождения {stinfo["bdate"]}, № студбилета {stinfo["t"]}, \
-        группа {gr.groupname}')
+        req = f'Создан студент {stinfo["surname"]} {stinfo["firstname"]} ' 
+        f'{stinfo["secondname"]}, дата рождения {stinfo["birthdate"]}, '
+        f'№ студбилета {stinfo["numticket"]}, группа {str(gr)}'
     else:
-        req = (f'Студент {stinfo["f"]} {stinfo["i"]} {stinfo["o"]} уже создан')
+        req = f'Студент {stinfo["surname"]} {stinfo["firstname"]} '
+        f'{stinfo["secondname"]} уже создан'
         
     return req
 
@@ -73,6 +72,7 @@ def find_all_students():
         stud.append(
             {'id': student.id,
              'ind': i,
+             'idradio': f'radio-{i-1}',
              'f': f'{student.surname} {student.firstname} {student.secondname}',
              'bdate': f'{student.birthdate:%Y-%m-%d}',
              't': student.numticket,
@@ -83,8 +83,8 @@ def find_all_students():
     return stud
 
 # удаление студента
-def delete_stud():
-    id = request.form.get('id')
+def delete_stud(id):
+    #id = request.form.get('id')
     if id:
         stud = Student.get_by_id(id)
         oldname = str(stud)
@@ -92,54 +92,45 @@ def delete_stud():
         if len(gr_with_stud) == 0:
             result = Student.del_stud(id)
             if result != 0:
-                req = (f'студент {oldname} успешно удален')
+                req = f'студент {oldname} успешно удален'
         else:
             for g in gr_with_stud:
                 gname = g.groupname
-            req = (f'Невозможно удалить студента т.к. он староста в группе\
-                  {gname}') 
+            req = f'Невозможно удалить студента т.к. он староста в группе {gname}'
             
         return req
 
 # обновление информации студента
-def update_stud():
-    id = request.form.get('id')
-    if id:
-        stud = Student.get_by_id(id)
-        print(stud)
-        if stud is not None:
-            stinfo = get_stud_info()
-            print(stinfo)
+def update_stud(stud):
+    stinfo = get_stud_info()
                                             
-            oldfio = str(stud)
-            if (stinfo['f'] == '' and stinfo['i'] == '' and 
-                stinfo['o'] == '' and stinfo['bdate'] == '' and 
-                stinfo['t'] == '' and stinfo['gr_id'] == '0'):
-                req = 'нечего изменять'
-            else:    
-                if stinfo['f'] != '':
-                    stud.surname = stinfo['f']
-                if stinfo['i'] != '':
-                    stud.firstname = stinfo['i']
-                if stinfo['o'] != '':
-                    stud.secondname = stinfo['o']
-                if stinfo['bdate'] != '':
-                    stud.birthdate = stinfo['bdate']
-                if stinfo['t'] != '':
-                    stud.numticket = stinfo['t']
-                str_star=''
-                if stinfo['gr_id'] != '0':
-                    gr = Group.get_by_id(stinfo['gr_id'])
-                    if gr is not None:
-                        if stud == stud.group.starosta and gr != stud.group:
-                            str_star = ' невозможно изменить группу, т.к. \
-                            студент является старостой'
-                        else:
-                            stud.group = gr
-                stud.save()
-                req = ((f'Студент {oldfio} успешно обновлен')+
-                       (f'{str_star}' if str_star != '' else ''))
-        else:
-            req = f'студент по id {id} не найден'
-            
-        return req
+    oldfio = str(stud)
+    if (stinfo['surname'] == '' and stinfo['firstname'] == '' and 
+        stinfo['secondname'] == '' and stinfo['birthdate'] == '' and 
+        stinfo['numticket'] == '' and stinfo['group'] == 0):
+        req = 'нечего изменять'
+    else:                    
+        if stinfo['surname'] != '':
+            stud.surname = stinfo['surname']
+        if stinfo['firstname'] != '':
+            stud.firstname = stinfo['firstname']
+        if stinfo['secondname'] != '':
+            stud.secondname = stinfo['secondname']
+        if stinfo['birthdate'] != '':
+            stud.birthdate = stinfo['birthdate']
+        if stinfo['numticket'] != '':
+            stud.numticket = stinfo['numticket']
+        str_star=''
+        if stinfo['group'] != 0:
+            gr = Group.get_by_id(stinfo['group'])
+            if gr is not None:
+                if stud == stud.group.starosta and gr != stud.group:
+                    str_star = ' невозможно изменить группу, т.к. '
+                    'студент является старостой'
+                else:
+                    stud.group = gr
+        stud.save()
+        req = (f'Студент {oldfio} успешно обновлен ' +
+                (f'{str_star}' if str_star != '' else ''))
+        
+    return req

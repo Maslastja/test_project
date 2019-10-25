@@ -10,6 +10,7 @@ dbase = AppGroup('dbase')
 def create_all_tabs():
     """Creating tables in database by all models in app"""
     ArModels = models.all_models()
+    print(ArModels)
     db.database.create_tables(ArModels)
 
 @dbase.command()

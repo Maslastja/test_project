@@ -1,53 +1,56 @@
-from flask import request, render_template
+from flask import request, render_template, redirect, url_for, flash
 from app.models.group import Group
 from app.models.student import Student
 from app.students.func import (find_all_students, add_student, 
                           delete_stud, update_stud)
-from app.students.forms import AddStudentForm, UpStudentForm,  DelStudentForm
+from app.students.forms import StudentForm, ListStudentForm
 
 def get_students():
     stud = find_all_students()
-    return render_template('student.html', stud=stud,  
+    students = []
+    for ind in stud:
+        students.append((ind['id'], ind['idradio']))
+    form = ListStudentForm()
+    form.radio.choices = students
+    resp = render_template('student.html', stud=stud, form=form, 
                                title='Список студентов')
-
-def addstudent():
-    gr = Group.gr_select()
-    form = AddStudentForm()
-    form.gr_id.choices = gr
-    
-    if request.method == 'POST' and form.validate_on_submit():
-        req = add_student()
-        return render_template('req.html', req=req, title='Группы и студенты')
-    else:    
-        elsereq = render_template('addstudent.html', form=form, 
-                                       title='Добавить студента')
-        return elsereq
+    if request.method == 'POST':
+        if 'addsub' in request.form:
+            resp = redirect(url_for('.studentform'))
+        elif 'radio' in request.form:
+            if 'changesub' in request.form:
+                resp = redirect(url_for('.studentform', id=request.form['radio']))
+            elif 'delsub' in request.form:
+                resp = redirect(url_for('.delstudent', id=request.form['radio']))
+    return resp
 
 def delstudent():
-    stud = Student.stud_select()
-    form = DelStudentForm()
-    form.id.choices = stud
-    
-    if request.method == 'POST' and form.validate_on_submit():
-        req = delete_stud()    
-        return render_template('req.html', req=req, title='Группы и студенты')
-    else:    
-        elsereq = render_template('delstudent.html', form=form,  
-                                       title='Удалить студента')
-        return elsereq
+    arg_id = request.args.get('id')
+    req = delete_stud(arg_id)    
+    flash(req)
+    return redirect(url_for('.get_students'))
 
-def upstudent():
+def studentform():
     gr = Group.gr_select()
-    stud = Student.stud_select()
-    form = UpStudentForm()
-    form.gr_id.choices = gr
-    form.id.choices = stud
+    arg_id = request.args.get('id')
+    if arg_id is not None:
+        stud = Student.get_by_id(arg_id)
+        form = StudentForm(obj=stud)
+        form.group.choices = gr
+        form.group.data = stud.group.id
+    else:
+        form = StudentForm()
+        form.group.choices = gr
     
     if request.method == 'POST' and form.validate_on_submit():
-        req = update_stud()
-        return render_template('req.html', req=req, title='Группы и студенты')
+        if arg_id is not None:
+            req = update_stud(stud)
+        else:
+            req = add_student()
+        flash(req)
+        return redirect(url_for('.get_students'))
     else:    
-        elsereq = render_template('upstudent.html', form=form,  
+        elsereq = render_template('studentform.html', form=form,  
                                title='Изменить студента')
         return elsereq
 

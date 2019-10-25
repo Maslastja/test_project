@@ -8,7 +8,7 @@ from app.models.users import User
 def check_logpass():
     username = request.form.get('username')
     password = request.form.get('password')
-    sel = User.sel_user_by_name(username)
+    sel = User.select().where(User.username == username)
     
     if len(sel) == 0:
         return (None, 'Неверный логин')

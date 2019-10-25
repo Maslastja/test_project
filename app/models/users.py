@@ -11,9 +11,3 @@ class User(db.Model):
               db_table = "users"
               order_by = ('id',)
        
-       def sel_user_by_name(username):
-              return User.select().where(User.username == username)
-
-       def get_user_by_id(id):
-              return (User.select().where(User.id==id)).get()
-   

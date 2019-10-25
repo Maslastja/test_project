@@ -16,7 +16,7 @@ def login():
             next_page = request.args.get('next')
             if not next_page:
                 resp = redirect('/index')
-                print(resp)
+                #print(resp)
             else:
                 resp = redirect(next_page) 
             
