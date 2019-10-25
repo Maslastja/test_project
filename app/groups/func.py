@@ -6,7 +6,7 @@ from app.models.student import Student
 
 # добавление новой группы
 def add_group():
-    name = request.form.get('name')
+    name = request.form.get('groupname')
     gr = Group.select().where(Group.groupname == name)
     if len(gr) == 0:
         row = Group(
@@ -21,40 +21,33 @@ def add_group():
     return req
 
 # удаление группы 
-def delete_group():
-    id = int(request.form.get('id'))
-    if id:
-        gr = Group.get_by_id(id)
-        #if len(gr) == 0:
-        if gr is None:
-            req = (f'Группы с id {id} не существует')
-        else:
-            oldname = gr.groupname
-            stud_in_gr = Student.stud_in_group(gr)
-            if len(stud_in_gr) == 0:
-                result = Group.del_gr(id)
-                if result != 0:
-                    req = f'группа {oldname} успешно удалена'
-            else:
-                req = 'Невозможно удалить группу т.к. в ней есть студенты: '
-                for s in stud_in_gr:
-                    req = f'{req} {str(s)} '
+def delete_group(arg_id):
+    gr = Group.get_by_id(arg_id)
+    oldname = gr.groupname
+    stud_in_gr = Student.stud_select(arg_id)
+    if len(stud_in_gr) == 1 and stud_in_gr[0][0]==0:
+        result = Group.del_gr(arg_id)
+        if result != 0:
+            req = f'группа {oldname} успешно удалена'
     else:
-        req = 'не указан id группы для удаления'
-    
+        req = 'Невозможно удалить группу т.к. в ней есть студенты: '
+        st = ''
+        for s in stud_in_gr:
+            if s[0] != 0:
+                st=f'{st} {s[1]}; '
+        req = f'{req} {st} '
     return req
 
 # обновление информации группы
-def update_group():
-    id = int(request.form.get('id'))
-    gr = Group.get_by_id(id)
+def update_group(gr):
     if gr is not None:
-        name = request.form.get('name')
-        stud_id = request.form.get('stud_id')
-        if name == '' and stud_id == '0':
+        name = request.form.get('groupname')
+        stud_id = int(request.form.get('star'))
+        if name == gr.groupname and ((gr.starosta is None and stud_id == 0) 
+                                     or stud_id == gr.starosta.id):
             req = 'нечего изменять'
         else:
-            if stud_id != '0':
+            if stud_id != 0:
                 stud = Student.get_by_id(stud_id)
             else:
                 stud = None
@@ -101,15 +94,13 @@ def find_all_groups():
     i=1
     for group in sel:
         gr.append(
-            {'ind':i,
+            {'id': group.id,
+             'ind':i,
+             'idradio': f'radio-{i-1}',
              'grname': group.groupname,
              'star': f'{group.fio}' if group.fio != '' else 'не указан'
              }
         )
         i=i+1
 
-    return gr                
-
-
-            
-
+    return gr 

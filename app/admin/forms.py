@@ -15,6 +15,6 @@ class AddUserForm(FlaskForm):
         user = User.sel_user_by_name(username.data)
         #print(len(user))
         if len(user) != 0:
-            raise ValidationError('Такой пользователь уже существует.\
-            Введите другое имя пользователя')
+            raise ValidationError('Такой пользователь уже существует. '
+            'Введите другое имя пользователя')
         

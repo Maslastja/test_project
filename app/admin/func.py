@@ -13,7 +13,7 @@ def create_user():
         username=username,
         password=hashpwd)
     row.save()
-    req = (f'Создан пользователь {username}')
+    req = f'Создан пользователь {username}'
         
     return req
 

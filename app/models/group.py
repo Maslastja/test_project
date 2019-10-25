@@ -6,23 +6,18 @@ from app.models.student import Student
 class Group(db.Model):
     id = pw.PrimaryKeyField(null=False)
     groupname = pw.CharField(max_length=150)
-    starosta = pw.ForeignKeyField(Student)
+    starosta = pw.ForeignKeyField(Student, null=True)
     class Meta:
         db_table = "groups"
         order_by = ('id',)
 
     def __str__(self):
         return self.groupname
-        
-    #поиск группы по id
-    def get_by_id(id):
-        gr = ph.get_object_or_404(Group, Group.id == id)
-        return gr
-    
+            
     # удаление группы по id
     def del_gr(id):
-        gr = Group.delete().where(Group.id == gr.id).execute()
-        return gr
+        result = Group.delete().where(Group.id == id).execute()
+        return result
 
     #поиск группы по старосте
     def get_by_stud(stud):
