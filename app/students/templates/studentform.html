@@ -11,7 +11,6 @@
 				<div class="column col-8 col-mr-auto">
 					<h1>Добавить студента</h1>
 					<form class="form-horizontal" action="" method="post" novalidate>
-						{{ form.hidden_tag() }}
 						<div class="form-group">
 							<div class="column col-2">
 								{{ form.surname.label(class_="form-label") }}
@@ -90,7 +89,9 @@
 									{% endfor %}
 								</div>
 							</div>
-							<div class="column col-1">{{ form.submit1(class="btn btn-primary") }}</div>
+							<div class="column col-1">
+								<button type="submit" class="btn btn-primary">Сохранить</button>							
+							</div>
 					</form>
 				</div> 
 				{% include "view_usr.html" %}

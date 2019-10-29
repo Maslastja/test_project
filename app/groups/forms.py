@@ -1,16 +1,11 @@
-from flask_wtf import FlaskForm
-from wtforms import (StringField, SubmitField, SelectField,
+from wtforms import (Form, StringField, SubmitField, SelectField,
                      RadioField, IntegerField)
 from wtforms.validators import DataRequired
 
-class ListGroupForm(FlaskForm):
+class ListGroupForm(Form):
     radio = RadioField(coerce=int)
-    #addsub = SubmitField('Добавить')
-    #changesub = SubmitField('Изменить')
-    #delsub = SubmitField('Удалить')
 
-class GroupForm(FlaskForm):
+class GroupForm(Form):
     groupname = StringField('Наименование группы',
                             validators=[DataRequired('значение не заполнено')])
     star = SelectField(u'Староста', coerce=int)
-    submit1 = SubmitField('Сохранить')
