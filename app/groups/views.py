@@ -8,6 +8,7 @@ from app.groups.forms import ListGroupForm, GroupForm
 from secretary import Renderer
 
 def get_groups():
+   
     gr = find_all_groups()
     groups = []
     for ind in gr:
@@ -19,14 +20,15 @@ def get_groups():
     #print(url_for('.groupform'))
     if request.method == 'POST':
         if 'addsub' in request.form:
-            resp = redirect(url_for('.groupform'))
+            resp = redirect(url_for('groups.groupform'))
         if 'testdoc' in request.form:
-            resp = redirect(url_for('.test_secr'))
+            resp = redirect(url_for('groups.test_secr'))
         elif 'radio' in request.form:
+            id=request.form['radio']
             if 'changesub' in request.form:
-                resp = redirect(url_for('.groupform', id=request.form['radio']))
+                resp = redirect(url_for('groups.groupform', id=id))
             elif 'delsub' in request.form:
-                resp = redirect(url_for('.delgroup', id=request.form['radio']))
+                resp = redirect(url_for('groups.delgroup', id=id))
     return resp
 
 def groupform():
@@ -38,23 +40,24 @@ def groupform():
         form.star.choices = stud
         if group.starosta is not None:
             form.star.data = group.starosta.id
+        else:
+            form.star.data = 0
         title = 'Изменить группу'
     else:
         group = None
-        form = GroupForm()
+        form = GroupForm(request.form or None)
         #без этого не отрабатывала валидация. ругалость, что не выбран староста
         form.star.choices = [(0,'')]
         form.star.data = 0
         #
         title = 'Добавить группу'
-    
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         if arg_id is not None:
             req = update_group(group)
         else:
             req = add_group()
         flash(req)
-        return redirect(url_for('.get_groups'))
+        return redirect(url_for('groups.get_groups'))
     else:
         return render_template('groupform.html', group=group, 
                     form=form, title=title)
@@ -63,7 +66,7 @@ def delgroup():
     arg_id = request.args.get('id')
     req = delete_group(arg_id)
     flash(req)
-    return redirect(url_for('.get_groups'))
+    return redirect(url_for('groups.get_groups'))
 
 def test_secr():
     gr = find_all_groups()

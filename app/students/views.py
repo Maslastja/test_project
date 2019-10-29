@@ -16,19 +16,20 @@ def get_students():
                                title='Список студентов')
     if request.method == 'POST':
         if 'addsub' in request.form:
-            resp = redirect(url_for('.studentform'))
+            resp = redirect(url_for('students.studentform'))
         elif 'radio' in request.form:
+            id=request.form['radio']
             if 'changesub' in request.form:
-                resp = redirect(url_for('.studentform', id=request.form['radio']))
+                resp = redirect(url_for('students.studentform', id=id))
             elif 'delsub' in request.form:
-                resp = redirect(url_for('.delstudent', id=request.form['radio']))
+                resp = redirect(url_for('students.delstudent', id=id))
     return resp
 
 def delstudent():
     arg_id = request.args.get('id')
     req = delete_stud(arg_id)    
     flash(req)
-    return redirect(url_for('.get_students'))
+    return redirect(url_for('students.get_students'))
 
 def studentform():
     gr = Group.gr_select()
@@ -39,16 +40,16 @@ def studentform():
         form.group.choices = gr
         form.group.data = stud.group.id
     else:
-        form = StudentForm()
+        form = StudentForm(request.form or None)
         form.group.choices = gr
     
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         if arg_id is not None:
             req = update_stud(stud)
         else:
             req = add_student()
         flash(req)
-        return redirect(url_for('.get_students'))
+        return redirect(url_for('students.get_students'))
     else:    
         elsereq = render_template('studentform.html', form=form,  
                                title='Изменить студента')

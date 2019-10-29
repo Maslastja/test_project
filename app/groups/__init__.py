@@ -6,5 +6,6 @@ options = {'url_prefix': '/group'}
 
 bp.add_url_rule('/group', view_func=views.groupform, methods=['GET', 'POST'])
 bp.add_url_rule('/list', view_func=views.get_groups, methods=['GET', 'POST'])
+bp.add_url_rule('/del', view_func=views.delgroup)
 
 bp.add_url_rule('/test', view_func=views.test_secr)

@@ -1,11 +1,10 @@
-from flask_wtf import FlaskForm
-from wtforms import (StringField, SubmitField, IntegerField, SelectField,
+from wtforms import (Form, StringField, SubmitField, IntegerField, SelectField,
                      RadioField)
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 
 
-class StudentForm(FlaskForm):
+class StudentForm(Form):
     surname = StringField('Фамилия', 
                     validators=[DataRequired('значение не заполнено')])
     firstname = StringField('Имя', 
@@ -18,7 +17,6 @@ class StudentForm(FlaskForm):
                      validators=[DataRequired('значение не заполнено')]) 
     group = SelectField(u'Выберите группу', coerce=int, 
                        validators=[DataRequired('значение не выбрано')])
-    submit1 = SubmitField('Сохранить')
 
-class ListStudentForm(FlaskForm):
+class ListStudentForm(Form):
     radio = RadioField(coerce=int)

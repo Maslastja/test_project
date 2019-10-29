@@ -43,8 +43,9 @@ def update_group(gr):
     if gr is not None:
         name = request.form.get('groupname')
         stud_id = int(request.form.get('star'))
-        if name == gr.groupname and ((gr.starosta is None and stud_id == 0) 
-                                     or stud_id == gr.starosta.id):
+        if name == gr.groupname and ((gr.starosta is None and stud_id == 0) or 
+                                     (gr.starosta is not None and 
+                                      stud_id == gr.starosta.id)):
             req = 'нечего изменять'
         else:
             if stud_id != 0:
