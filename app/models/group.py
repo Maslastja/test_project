@@ -14,11 +14,6 @@ class Group(db.Model):
     def __str__(self):
         return self.groupname
             
-    # удаление группы по id
-    def del_gr(id):
-        result = Group.delete().where(Group.id == id).execute()
-        return result
-
     #поиск группы по старосте
     def get_by_stud(stud):
         #не использован метод get_object_or_404 т.к. нет необходимости получить

@@ -27,29 +27,16 @@ def create_table(name):
 @click.argument('login')
 @click.argument('password')
 def create_admin(login, password):
-    username = login
-    #print(username)
-    password = password
-    hashpwd = generate_password_hash(password)
-    #print(password)
-    row = models.User(
-        username=username,
-        password=hashpwd,
-        isadmin=True)
-    row.save()
+    u = models.User(username=login, isadmin=True)
+    u.set_password(password)
+    u.save()
     print(f'Создан администратор: {login}')
     
 @dbase.command()
 @click.argument('login')
 @click.argument('password')
 def create_user(login, password):
-    username = login
-    #print(username)
-    password = password
-    hashpwd = generate_password_hash(password)
-    #print(password)
-    row = models.User(
-        username=username,
-        password=hashpwd)
-    row.save()
+    u = models.User(username=login)
+    u.set_password(password)
+    u.save()
     print(f'Создан пользователь: {login}')

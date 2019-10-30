@@ -4,13 +4,13 @@ from werkzeug.security import check_password_hash
 from app.models.users import User
 
 class LoginForm(Form):
-    username = StringField('Логин')
-    password = PasswordField('Пароль')
+    username = StringField('Логин', 
+                           [validators.DataRequired('поле не заполнено')])
+    password = PasswordField('Пароль',
+                             [validators.DataRequired('поле не заполнено')])
 
     def validate(self):
-        if self.username.data=='' and self.password.data=='':
-            self.username.errors=('поле не заполнено',)
-            self.password.errors=('поле не заполнено',)
+        if not super(LoginForm, self).validate():
             return False
         user = User.select().where(User.username == self.username.data)
         if len(user) == 0:
@@ -18,7 +18,7 @@ class LoginForm(Form):
             return False
         else:
             usr = user.get()
-            if not check_password_hash(usr.password, self.password.data):
+            if not usr.check_password(self.password.data):
                 self.password.errors=('Неверный пароль',)
                 return False
             else:

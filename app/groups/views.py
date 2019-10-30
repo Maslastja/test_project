@@ -3,7 +3,7 @@ from flask import (render_template, request, make_response, redirect, url_for,
 from app.models.group import Group
 from app.models.student import Student
 from app.groups.func import (find_all_groups, add_group, 
-                          update_group, delete_group)
+                             update_group, delete_group)
 from app.groups.forms import ListGroupForm, GroupForm
 from secretary import Renderer
 
@@ -17,7 +17,6 @@ def get_groups():
     form.radio.choices = groups
     resp = render_template('group.html', gr=gr, form=form, 
                                            title='Список групп')
-    #print(url_for('.groupform'))
     if request.method == 'POST':
         if 'addsub' in request.form:
             resp = redirect(url_for('groups.groupform'))
@@ -35,7 +34,7 @@ def groupform():
     arg_id = request.args.get('id')
     if arg_id is not None:
         group = Group.get_by_id(arg_id)
-        form = GroupForm(obj=group)
+        form = GroupForm(request.form or None, obj=group)
         stud = Student.stud_select(arg_id)
         form.star.choices = stud
         if group.starosta is not None:
@@ -53,9 +52,9 @@ def groupform():
         title = 'Добавить группу'
     if request.method == 'POST' and form.validate():
         if arg_id is not None:
-            req = update_group(group)
+            req = update_group(group, form.groupname.data, form.star.data)
         else:
-            req = add_group()
+            req = add_group(form.groupname.data)
         flash(req)
         return redirect(url_for('groups.get_groups'))
     else:

@@ -1,13 +1,13 @@
 from flask import request, render_template, redirect, session, make_response, url_for
 from .forms import LoginForm
-from app.func import login_required
+from app.utils import login_required
 from app.models.users import User
 
 def login():
     form = LoginForm(request.form or None)
     if request.method == 'POST' and form.validate():
         user = (User.select()
-                .where(User.username == request.form.get('username')).get())
+                .where(User.username == form.username.data).get())
         next_page = request.args.get('next')
         if not next_page:
             resp = redirect('/index')

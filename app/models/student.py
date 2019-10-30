@@ -17,12 +17,7 @@ class Student(db.Model):
 
     def __str__(self):
         return f'{self.surname} {self.firstname} {self.secondname}'
-     
-    # удаление студента по id
-    def del_stud(id):
-        stud = Student.delete().where(Student.id == id).execute()
-        return stud
- 
+      
     # возврат списка выбора студентов (кортеж)
     def stud_select(gr=None):
         stud = [(0, 'не указан')]
