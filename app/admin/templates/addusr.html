@@ -10,6 +10,13 @@
 				</div>
 				<div class="column col-8">
 				<h1>Добавить пользователя</h1>
+				{% with messages = get_flashed_messages() %}
+				   {% if messages %}
+				      {% for message in messages %}
+				         {{ message }}
+				      {% endfor %}
+				   {% endif %}
+				{% endwith %}
 				<form action="" method="post" novalidate>
 						<div class="form-group">
 							<div class="column col-3">

@@ -36,7 +36,7 @@ def studentform():
     arg_id = request.args.get('id')
     if arg_id is not None:
         stud = Student.get_by_id(arg_id)
-        form = StudentForm(obj=stud)
+        form = StudentForm(request.form or None, obj=stud)
         form.group.choices = gr
         form.group.data = stud.group.id
     else:
@@ -44,10 +44,11 @@ def studentform():
         form.group.choices = gr
     
     if request.method == 'POST' and form.validate():
+        studinfo = get_stud_info(form)
         if arg_id is not None:
-            req = update_stud(stud)
+            req = update_stud(stud, studinfo)
         else:
-            req = add_student()
+            req = add_student(studinfo)
         flash(req)
         return redirect(url_for('students.get_students'))
     else:    
@@ -55,3 +56,15 @@ def studentform():
                                title='Изменить студента')
         return elsereq
 
+# получить информацию для функций
+def get_stud_info(form):
+    studinfo={
+        'surname': form.surname.data,
+        'firstname': form.firstname.data,
+        'secondname': form.secondname.data,
+        'birthdate': form.birthdate.data,
+        'numticket': form.numticket.data,
+        'group': int(request.form['group']) #из form.group.data не берет знач.
+    }
+    
+    return studinfo

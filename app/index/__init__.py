@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from app.func import login_required
+from app.utils import login_required
 
 bp = Blueprint('index', __name__, template_folder='templates')
 
