@@ -7,15 +7,19 @@ class User(db.Model):
        username = pw.CharField(max_length=15, null=False)
        password = pw.CharField(max_length=124)
        isadmin = pw.BooleanField(default=False)
- 
+       
        class Meta:
               db_table = "users"
               order_by = ('id',)
-
-       def set_password(self, password):
+       
+       @property
+       def pwd(self):
+              raise AttributeError('not read pwd')
+       
+       @pwd.setter
+       def pwd(self, password):
               self.password = generate_password_hash(password)
-          
+
        def check_password(self, password):
               return check_password_hash(self.password, password)
-       
-       
+
