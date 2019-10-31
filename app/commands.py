@@ -27,8 +27,9 @@ def create_table(name):
 @click.argument('login')
 @click.argument('password')
 def create_admin(login, password):
-    u = models.User(username=login, isadmin=True)
-    u.set_password(password)
+    u = models.User(username=login,
+                    isadmin=True,
+                    pwd=password)
     u.save()
     print(f'Создан администратор: {login}')
     
@@ -36,7 +37,7 @@ def create_admin(login, password):
 @click.argument('login')
 @click.argument('password')
 def create_user(login, password):
-    u = models.User(username=login)
-    u.set_password(password)
+    u = models.User(username=login,
+                    pwd=password)
     u.save()
     print(f'Создан пользователь: {login}')
