@@ -28,11 +28,13 @@ def create_app():
               bp = request.blueprint or request.endpoint
               if bp in ('auth', 'static'):
                      return
-              elif 'user_id' not in session:
+              
+              if 'user_id' not in session:
                      return redirect(url_for('auth.login', 
                                              next=request.url or 'static'))
               
-       if not app.debug:              @app.errorhandler(Exception)
+       if not app.debug:
+              @app.errorhandler(Exception)
               def handle_error(e):
                      if type(e)==NotFound:
                             code = 404
