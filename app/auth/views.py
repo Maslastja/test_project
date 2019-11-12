@@ -2,7 +2,7 @@ from flask import request, render_template, redirect, session
 from .forms import LoginForm
 from app.utils import login_required
 from app.models.users import User
-from app.models.sessions import Sessions
+from app.models.sessions import SessionsStore
 
 def login():
     form = LoginForm(request.form or None)
@@ -23,8 +23,7 @@ def login():
                 'isadmin': user_bd.isadmin,
             }
         session.user = user
-        Sessions.save_session(user)
-            
+        session.save_in_db(user)
         return resp
             
     resp = render_template('login.html', form=form, title='Вход')
@@ -34,7 +33,7 @@ def login():
 @login_required
 def logout():
     #удалить информацию о сессии из бд
-    Sessions.delete_session()
+    session.delete_session()
     session.clear()
     resp = redirect('/login')
     
