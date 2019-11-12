@@ -1,5 +1,5 @@
 import peewee as pw
-import playhouse.flask_utils as ph
+#import playhouse.flask_utils as ph
 from config.database import db
 
 class Student(db.Model):

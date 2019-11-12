@@ -10,7 +10,8 @@ def create_usr():
         u.save()
         if u is not None:
             req = f'Создан пользователь {form.username.data}'
-            flash(req)            form = AddUserForm() #переопределение формы, чтобы поля были пустыми
+            flash(req)
+            form = AddUserForm() #переопределение формы, чтобы поля были пустыми
     
     return render_template('addusr.html', form=form,  
                                title='Добавить пользователя')

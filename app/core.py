@@ -1,9 +1,11 @@
 import os
 #import logging
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.exceptions import NotFound
 from config.database import db
 from app.utils import logapp, register_bp
+from app.sessions import MyDatabaseSessionInterface
+from app.models.sessions import Sessions
 #logger = logging.getLogger('peewee')
 #logger.addHandler(logging.StreamHandler())
 #logger.setLevel(logging.DEBUG)
@@ -19,20 +21,29 @@ def create_app():
        if not app.debug:
               logapp(app)
        
+       app.session_interface = MyDatabaseSessionInterface()
+       
        @app.before_request
        def before_request():
-              #if ('user_id' not in session and 
-              #(request.blueprint is None or request.blueprint != 'auth') and
-              #request.endpoint != 'static'):
-                     #return redirect(url_for('auth.login', next=request.url))
               bp = request.blueprint or request.endpoint
               if bp in ('auth', 'static'):
                      return
-              elif 'user_id' not in session:
+              s = Sessions.exist_session()
+              if s is None:
                      return redirect(url_for('auth.login', 
                                              next=request.url or 'static'))
+
+       
+       @app.after_request
+       def after_request(response):
+              s = Sessions.exist_session()
+              if s is not None:
+                     Sessions.change_last_req()
+              return response
+       
               
-       if not app.debug:              @app.errorhandler(Exception)
+       if not app.debug:
+              @app.errorhandler(Exception)
               def handle_error(e):
                      if type(e)==NotFound:
                             code = 404

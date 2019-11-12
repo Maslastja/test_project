@@ -1,101 +1,90 @@
-<!DOCTYPE html>
-<html>
-	{% include "head.html" %}
-	<body>
-		{% set subname="sub6" %}
-		<div class="container">
-			<div class="columns">
-				<div class="column col-ml-auto">
-					{% include "base.html" %}
+
+{% extends "base.html" %}
+{% block content %}
+	<div class="column col-8 col-mr-auto">
+		<h1>Добавить студента</h1>
+		<form class="form-horizontal" action="" method="post" novalidate>
+			<div class="form-group">
+				<div class="column col-2">
+					{{ form.surname.label(class_="form-label") }}
 				</div>
-				<div class="column col-8 col-mr-auto">
-					<h1>Добавить студента</h1>
-					<form class="form-horizontal" action="" method="post" novalidate>
-						<div class="form-group">
-							<div class="column col-2">
-								{{ form.surname.label(class_="form-label") }}
-							</div>
-							<div class="column col-auto">
-								{{ form.surname(class_="form-input", autocomplete="off") }}
-							</div>
-							<div class="column col-auto">
-								{% for error in form.surname.errors %}
-									<span class="text-error">[{{ error }}]</span>
-								{% endfor %}
-							</div>
-						</div>	
-						<div class="form-group">	
-							<div class="column col-2">
-								{{ form.firstname.label(class_="form-label") }}
-							</div>
-							<div class="column col-auto">
-								{{ form.firstname(class_="form-input", autocomplete="off") }}
-							</div>
-							<div class="column col-auto">	
-								{% for error in form.firstname.errors %}
-									<span class="text-error">[{{ error }}]</span>
-								{% endfor %}
-							</div>
-						</div>
-							<div class="form-group">
-								<div class="column col-2">
-									{{ form.secondname.label(class_="form-label") }}
-								</div>
-								<div class="column col-auto">
-									{{ form.secondname(class_="form-input", autocomplete="off") }}
-								</div>
-								<div class="column col-auto">
-									{% for error in form.secondname.errors %}
-										<span class="text-error">[{{ error }}]</span>
-									{% endfor %}
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="column col-2">
-									{{ form.birthdate.label(class_="form-label") }}
-								</div>
-								<div class="column col-auto">
-									{{ form.birthdate(class_="form-input") }}
-								</div>
-								<div class="column col-auto">
-									{% for error in form.birthdate.errors %}
-										<span class="text-error">[{{ error }}]</span>
-									{% endfor %}
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="column col-2">
-									{{ form.numticket.label(class_="form-label") }}
-								</div>
-								<div class="column col-auto">
-									{{ form.numticket(class_="form-input", autocomplete="off") }}
-								</div>
-								<div class="column col-auto">
-									{% for error in form.numticket.errors %}
-										<span class="text-error">[{{ error }}]</span>
-									{% endfor %}
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="column col-2">
-									{{ form.group.label(class_="form-label") }}
-								</div>
-								<div class="column col-auto">
-									{{ form.group(class_="form-select") }}
-								</div>
-								<div class="column col-auto">
-									{% for error in form.group.errors %}
-										<span class="text-error">[{{ error }}]</span>
-									{% endfor %}
-								</div>
-							</div>
-							<div class="column col-1">
-								<button type="submit" class="btn btn-primary">Сохранить</button>							
-							</div>
-					</form>
-				</div> 
-				{% include "view_usr.html" %}
+				<div class="column col-auto">
+					{{ form.surname(class_="form-input", autocomplete="off") }}
+				</div>
+				<div class="column col-auto">
+					{% for error in form.surname.errors %}
+						<span class="text-error">[{{ error }}]</span>
+					{% endfor %}
+				</div>
+			</div>	
+			<div class="form-group">	
+				<div class="column col-2">
+					{{ form.firstname.label(class_="form-label") }}
+				</div>
+				<div class="column col-auto">
+					{{ form.firstname(class_="form-input", autocomplete="off") }}
+				</div>
+				<div class="column col-auto">	
+					{% for error in form.firstname.errors %}
+						<span class="text-error">[{{ error }}]</span>
+					{% endfor %}
+				</div>
 			</div>
-		</div>
-	</body>
-</html>
+				<div class="form-group">
+					<div class="column col-2">
+						{{ form.secondname.label(class_="form-label") }}
+					</div>
+					<div class="column col-auto">
+						{{ form.secondname(class_="form-input", autocomplete="off") }}
+					</div>
+					<div class="column col-auto">
+						{% for error in form.secondname.errors %}
+							<span class="text-error">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="column col-2">
+						{{ form.birthdate.label(class_="form-label") }}
+					</div>
+					<div class="column col-auto">
+						{{ form.birthdate(class_="form-input") }}
+					</div>
+					<div class="column col-auto">
+						{% for error in form.birthdate.errors %}
+							<span class="text-error">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="column col-2">
+						{{ form.numticket.label(class_="form-label") }}
+					</div>
+					<div class="column col-auto">
+						{{ form.numticket(class_="form-input", autocomplete="off") }}
+					</div>
+					<div class="column col-auto">
+						{% for error in form.numticket.errors %}
+							<span class="text-error">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="column col-2">
+						{{ form.group.label(class_="form-label") }}
+					</div>
+					<div class="column col-auto">
+						{{ form.group(class_="form-select") }}
+					</div>
+					<div class="column col-auto">
+						{% for error in form.group.errors %}
+							<span class="text-error">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="column col-1">
+					<button type="submit" class="btn btn-primary">Сохранить</button>							
+				</div>
+		</form>
+	</div> 
+{% endblock %}

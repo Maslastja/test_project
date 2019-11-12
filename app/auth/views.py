@@ -1,22 +1,30 @@
-from flask import request, render_template, redirect, session, make_response, url_for
+from flask import request, render_template, redirect, session
 from .forms import LoginForm
 from app.utils import login_required
 from app.models.users import User
+from app.models.sessions import Sessions
 
 def login():
     form = LoginForm(request.form or None)
     if request.method == 'POST' and form.validate():
-        user = (User.select()
-                .where(User.username == form.username.data).get())
         next_page = request.args.get('next')
         if not next_page:
             resp = redirect('/index')
         else:
             resp = redirect(next_page) 
             
-        session['user_id'] = user.id
-        session['username'] = user.username
-        session['isadmin'] = user.isadmin
+        #попытка получить и записать пользователя в сессию
+        username = form.username.data
+        user_bd = (User.select()
+                .where(User.username == username).get())
+        user = {
+                'user_id': user_bd.id,
+                'username': user_bd.username,
+                'isadmin': user_bd.isadmin,
+            }
+        session.user = user
+        Sessions.save_session(user)
+            
         return resp
             
     resp = render_template('login.html', form=form, title='Вход')
@@ -25,10 +33,9 @@ def login():
 
 @login_required
 def logout():
-    #выход пользователя, обнулить запомненный id пользователя
-    session.pop('user_id', None)
-    session.pop('username', None)
-    session.pop('isadmin', None)
+    #удалить информацию о сессии из бд
+    Sessions.delete_session()
+    session.clear()
     resp = redirect('/login')
     
     return resp

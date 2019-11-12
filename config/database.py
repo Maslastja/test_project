@@ -6,9 +6,18 @@ class BaseModelClass(Model):
     @classmethod
     def get_by_id(self, id):
         result = get_object_or_404(self, self.id == id)
-        #print(result)
         return result
+
+class MyFlaskBD(FlaskDB):
+    def connect_db(self):
+        if self.database.is_closed():
+            self.database.connect()
     
-db = FlaskDB(model_class=BaseModelClass)
+    def close_db(self, exc):
+        if not self.database.is_closed():
+            self.database.close()
+    
+    
+db = MyFlaskBD(model_class=BaseModelClass)
 
 

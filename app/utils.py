@@ -2,21 +2,23 @@ import os
 import importlib
 from logging.handlers import RotatingFileHandler
 from peewee import logging
-from flask import request, session, redirect, url_for
+from flask import request, redirect, url_for
 from functools import wraps
+from app.models.sessions import Sessions
 
 def logapp(app):
     if not os.path.exists('logs'):
         os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/app.log', 
-                                            maxBytes=10240, backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s %(levelname)s: '
-        '%(message)s [in %(pathname)s:%(lineno)d]'))
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('test app')
+    
+    file_handler = RotatingFileHandler('logs/app.log', 
+                                        maxBytes=10240, backupCount=10)
+    file_handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)s: '
+    '%(message)s [in %(pathname)s:%(lineno)d]'))
+    file_handler.setLevel(logging.INFO)
+    app.logger.addHandler(file_handler)
+    app.logger.setLevel(logging.INFO)
+    app.logger.info('test app')
 
 def register_bp(app):
     #print(app.import_name)
@@ -43,7 +45,9 @@ def register_bp(app):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
+        s = Sessions.exist_session()
+        if s is None:
             return redirect(url_for('auth.login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
+

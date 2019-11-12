@@ -1,7 +1,7 @@
-import peewee as pw
 from app.models.group import Group
 from app.models.student import Student
 from app.models.users import User
+from app.models.sessions import Sessions
 
 def all_models():
     ArModels = []
@@ -11,6 +11,7 @@ def all_models():
     #зависимые таблицы
     ArModels.append(Student)
     ArModels.append(Group)
+    ArModels.append(Sessions)
     
     return ArModels
 

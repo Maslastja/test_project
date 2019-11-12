@@ -1,52 +1,42 @@
-<!DOCTYPE html>
-<html>
-	{% include "head.html" %}
-	<body>
-		{% set subname="sub5" %}
-		<div class="container">
-			<div class="columns">
-				<div class="column col-ml-auto">
-					{% include "base.html" %}
-				</div>
-				<div class="column col-8 col-mк-auto">
-					<h1>Список студентов</h1>
-					{% with messages = get_flashed_messages() %}
-					   {% if messages %}
-					      {% for message in messages %}
-					         {{ message }}
-					      {% endfor %}
-					   {% endif %}
-					{% endwith %}
-					<form action="" method="post" novalidate>
-						{% include "panel.html" %}
-						<table class="table table-striped table-hover">
-							<tr>
-								<th></th>							
-								<th>№</th>
-								<th>ФИО</th>
-								<th>Дата рождения</th>
-								<th>№ студбилета</th>
-								<th>группа</th>
-							</tr>
-							{% for st in stud %}
-								<tr id = {{ st.id }}>
-									{% for subfield in form.radio %}
-										{% if st.idradio == subfield["id"] %}								
-										<td>{{ subfield }}</td>
-										{% endif %}
-									{% endfor %}
-									<td>{{ st.ind }}</td>
-									<td>{{ st.f }}</td>
-									<td>{{ st.bdate }}</td>
-									<td>{{ st.t }}</td>
-									<td>{{ st.gr }}</td>
-								</tr>
-							{% endfor %}
-						</table>
-					</form>
-				</div> 
-				{% include "view_usr.html" %}
-			</div>
-		</div>
-	</body>
-</html>
+
+{% set subname="sub2" %}
+{% extends "base.html" %}
+{% block content %}
+	<div class="column col-8 col-mк-auto">
+		<h1>Список студентов</h1>
+		{% with messages = get_flashed_messages() %}
+		   {% if messages %}
+		      {% for message in messages %}
+		         {{ message }}
+		      {% endfor %}
+		   {% endif %}
+		{% endwith %}
+		<form action="" method="post" novalidate>
+			{% include "panel.html" %}
+			<table class="table table-striped table-hover">
+				<tr>
+					<th></th>							
+					<th>№</th>
+					<th>ФИО</th>
+					<th>Дата рождения</th>
+					<th>№ студбилета</th>
+					<th>группа</th>
+				</tr>
+				{% for st in stud %}
+					<tr id = {{ st.id }}>
+						{% for subfield in form.radio %}
+							{% if st.idradio == subfield["id"] %}								
+							<td>{{ subfield }}</td>
+							{% endif %}
+						{% endfor %}
+						<td>{{ st.ind }}</td>
+						<td>{{ st.f }}</td>
+						<td>{{ st.bdate }}</td>
+						<td>{{ st.t }}</td>
+						<td>{{ st.gr }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</form>
+	</div> 
+{% endblock %}

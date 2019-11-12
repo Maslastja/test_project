@@ -1,4 +1,4 @@
-from wtforms import (Form, StringField, SubmitField, PasswordField, 
+from wtforms import (Form, StringField, PasswordField, 
                      BooleanField, validators)
 from werkzeug.security import check_password_hash
 from app.models.users import User
