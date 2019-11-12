@@ -1,4 +1,4 @@
-from wtforms import (Form, StringField, SubmitField, IntegerField, SelectField,
+from wtforms import (Form, StringField, IntegerField, SelectField,
                      RadioField)
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired

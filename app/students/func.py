@@ -1,6 +1,5 @@
 import peewee as pw
 from flask import request
-from datetime import date
 from app.models.group import Group
 from app.models.student import Student
 

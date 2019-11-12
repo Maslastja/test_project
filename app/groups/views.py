@@ -50,6 +50,7 @@ def groupform():
         form.star.data = 0
         #
         title = 'Добавить группу'
+    
     if request.method == 'POST' and form.validate():
         if arg_id is not None:
             req = update_group(group, form.groupname.data, form.star.data)

@@ -2,8 +2,9 @@ import os
 import importlib
 from logging.handlers import RotatingFileHandler
 from peewee import logging
-from flask import request, session, redirect, url_for
+from flask import request, redirect, url_for
 from functools import wraps
+from app.models.sessions import Sessions
 
 def logapp(app):
     if not os.path.exists('logs'):
@@ -44,7 +45,9 @@ def register_bp(app):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
+        s = Sessions.exist_session()
+        if s is None:
             return redirect(url_for('auth.login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
+

@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, SubmitField, SelectField
+from wtforms import Form, StringField, SelectField
 from wtforms.validators import ValidationError, DataRequired
 from app.models.users import User
 

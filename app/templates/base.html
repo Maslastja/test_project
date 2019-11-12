@@ -1,34 +1,56 @@
-<div class="container">
-	<div class="columns">
-		<div class="column col-1">
-			<div class="btn-group">
-				<div class="p-centered">
-					<a href='/index'><img src="/static/img/label.png" width="100" height="100" alt="label"></a>
-				</div>
-				{% if subname =='sub1' %}
-					<a name='sub1' href='/group/list' class="btn active">Вывести список групп</a>
-				{% else %}
-					<a name='sub1' href='/group/list' class="btn">Вывести список групп</a>
-				{% endif %}
-				{% if subname =='sub5' %}
-					<a name='sub5' href='/student/list' class="btn active">Вывести список студентов</a>
-				{% else %}
-					<a name='sub5' href='/student/list' class="btn">Вывести список студентов</a>
-				{% endif %}
-				{% if subname =='sub9' %}
-					<a name='sub9' href='/analis/countstud' class="btn active">Вывести количество студентов</a>    
-				{% else %}
-					<a name='sub9' href='/analis/countstud' class="btn">Вывести количество студентов</a>    
-				{% endif %}
-				{% if not logform and session['isadmin'] %}
-					<div class="btn-group">
-						<div class="p-centered">
-							<span class="label label-primary">Администрирование</span>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ title }}</title>
+  		<meta charset="utf-8">
+	 	<link rel="stylesheet" href="{{ url_for('static',filename='spectre/spectre.css') }}" type="text/css" >
+	 	<link rel="stylesheet" href="{{ url_for('static',filename='spectre/spectre-exp.css') }}" type="text/css" >
+	 	<link rel="stylesheet" href="{{ url_for('static',filename='spectre/spectre-icons.css') }}" type="text/css" >
+	</head>
+	<body>
+		{#{{ session['sid'] }}#}
+		<div class="container">
+			<div class="columns">
+				<div class="column col-2">
+					<div class="column col-1">
+						<div class="btn-group">
+							<div class="p-centered">
+								<a href='/index'><img src="/static/img/label.png" width="100" height="100" alt="label"></a>
+							</div><br>
+							{% if subname =='sub1' %}
+								<a name='sub1' href='/group/list' class="btn active">Вывести список групп</a>
+							{% else %}
+								<a name='sub1' href='/group/list' class="btn">Вывести список групп</a>
+							{% endif %}
+							{% if subname =='sub2' %}
+								<a name='sub5' href='/student/list' class="btn active">Вывести список студентов</a>
+							{% else %}
+								<a name='sub5' href='/student/list' class="btn">Вывести список студентов</a>
+							{% endif %}
+							{% if subname =='sub3' %}
+								<a name='sub9' href='/analis/countstud' class="btn active">Вывести количество студентов</a>    
+							{% else %}
+								<a name='sub9' href='/analis/countstud' class="btn">Вывести количество студентов</a>    
+							{% endif %}
+							{% if not logform and session['user']['isadmin'] %}
+								<div class="btn-group">
+									<div class="p-centered">
+										<span class="label label-primary">Администрирование</span>
+									</div>
+									<a name='addusr' href='/admin/addusr' class="btn">Добавить пользователя</a>
+								</div>
+							{% endif %}
 						</div>
-						<a name='addusr' href='/admin/addusr' class="btn">Добавить пользователя</a>
 					</div>
-				{% endif %}
+				</div>
+				{% block content %}{% endblock %}
+				<div class="column col-ml-auto">
+					{% if session['user'] %}
+						<span class="label label-secondary">пользователь: {{ session['user']['username'] }}</span>
+						<a name='exit' href='/logout' class="btn-link">Выход</a> 
+					{% endif %}
+				</div>
 			</div>
-		</div>
-	</div>
-</div>
+		</div>	            
+	</body>
+</html>
