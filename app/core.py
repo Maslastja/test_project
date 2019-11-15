@@ -5,7 +5,6 @@ from werkzeug.exceptions import NotFound
 from config.database import db
 from app.utils import logapp, register_bp
 from app.sessions import MyDatabaseSessionInterface
-from app.models.sessions import SessionsStore
 #logger = logging.getLogger('peewee')
 #logger.addHandler(logging.StreamHandler())
 #logger.setLevel(logging.DEBUG)
@@ -16,8 +15,8 @@ def create_app():
                    template_folder='app/templates')
        
        app.config.from_object('config.settings')
-       register_bp(app)
        db.init_app(app)
+       register_bp(app)
        if not app.debug:
               logapp(app)
        
@@ -48,7 +47,7 @@ def create_app():
                             code = 404
                      else:
                             code = 500
-                     return render_template(str(code)+'.html'), code
+                     return render_template(f'{str(code)}.html'), code
        
        return app
 

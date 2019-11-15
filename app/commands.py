@@ -25,19 +25,23 @@ def create_table(name):
         
 @dbase.command()
 @click.argument('login')
-@click.argument('password')
-def create_admin(login, password):
-    u = models.User(username=login,
-                    isadmin=True,
-                    pwd=password)
-    u.save()
-    print(f'Создан администратор: {login}')
+def create_admin(login):
+    create_user_in_db(login, True)
     
 @dbase.command()
 @click.argument('login')
-@click.argument('password')
-def create_user(login, password):
+def create_user(login):
+    create_user_in_db(login, False)
+
+def create_user_in_db(login, isadmin):
+    password = click.prompt('Задайте пароль', hide_input=True)
+    confirm = click.prompt('Подтвердите пароль', hide_input=True)
+    if password != confirm:
+        raise click.BadParameter('Пароль не совпадает')
     u = models.User(username=login,
-                    pwd=password)
+                    pwd=password,
+                    isadmin=isadmin)
     u.save()
-    print(f'Создан пользователь: {login}')
+    str_isadmin = 'администратор' if isadmin else 'пользователь'
+    click.echo(f'Создан {str_isadmin}: {login}')
+    

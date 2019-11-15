@@ -31,7 +31,6 @@ class MyDatabaseSession(CallbackDict, SessionMixin):
         s.save()
     
     def __init__(self, initial=None):
-        
         def on_update(self):
             self.modified = True
         CallbackDict.__init__(self, initial, on_update)
@@ -45,6 +44,9 @@ class MyDatabaseSessionInterface(SessionInterface):
     session_class = MyDatabaseSession
     
     def open_session(self, app, request):
+        if request.endpoint == 'static':
+            return None
+        
         sid = request.cookies.get(app.session_cookie_name)
         s = self.session_class()
         if not sid:
@@ -63,15 +65,23 @@ class MyDatabaseSessionInterface(SessionInterface):
         return s
             
     def save_session(self, app, session, response):
+        domain = self.get_cookie_domain(app)
+        path = self.get_cookie_path(app)
+        
         s = session.exist_session()
         if not s:
             if session.modified:
-                response.delete_cookie(app.session_cookie_name)
+                response.delete_cookie(app.session_cookie_name,
+                                       domain=domain, path=path)
                 return
         
         sid = request.cookies.get(app.session_cookie_name)
         #if sid is None: #тоже вариант
         if session.user and sid != session.sid:
-            response.set_cookie(app.session_cookie_name, session.sid)
+            httponly = self.get_cookie_httponly(app)
+            secure = self.get_cookie_secure(app)
+            response.set_cookie(app.session_cookie_name, session.sid,
+                                httponly=httponly, domain=domain, 
+                                path=path, secure=secure)
  
  
