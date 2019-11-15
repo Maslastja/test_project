@@ -23,19 +23,22 @@ def register_bp(app):
     #print(app.import_name)
     #возможно можно использовать import_name т.к. это название папки 
     #приложения, в которой находятся все дополнительные папки и файлы
+    
     for address, dirs, files in os.walk(f'{app.import_name}'):
         for d in dirs:
             try:
                 #print(f'{address}.{d}')
                 module = importlib.import_module(f'{address}.{d}')
-                if 'bp' in module.__dict__:
+                if hasattr(module, 'bp'):
                     bp = module.bp
-                    if 'options' in module.__dict__:
+                    if hasattr(module, 'options'):
                         opt = module.options
                     else:
                         opt = {}
                     app.register_blueprint(bp, **opt)
-            except(Exception):
+            except (ImportError, TypeError) as e:
+                app.logger.exception(e)
+         
                 #if d == 'students':
                     #module = importlib.import_module(f'app.{d}')
                 continue
